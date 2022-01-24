@@ -3,12 +3,20 @@
 #include <Serial_CAN_Module.h>
 #include <SoftwareSerial.h>
 #include <HardwareSerial.h>
+#include <AltSoftSerial.h>
 
 void Serial_CAN::begin(int can_tx, int can_rx, unsigned long baud)
 {
     softwareSerial = new SoftwareSerial(can_tx, can_rx);
     softwareSerial->begin(baud);
     canSerial = softwareSerial;
+}
+
+void Serial_CAN::begin(AltSoftSerial &serial, unsigned long baud)
+{
+    serial.begin(baud);
+    altSerial = &serial;
+    canSerial = &serial;
 }
 
 void Serial_CAN::begin(SoftwareSerial &serial, unsigned long baud)
@@ -201,6 +209,10 @@ void Serial_CAN::selfBaudRate(unsigned long baud)
     if(softwareSerial)
     {
         softwareSerial->begin(baud);
+    }
+    else if(altSerial)
+    {
+        altSerial->begin(baud);
     }
     else if(hardwareSerial)
     {
@@ -409,3 +421,4 @@ void Serial_CAN::debugMode()
 }
 
 // END FILE
+
