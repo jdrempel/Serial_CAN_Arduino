@@ -49,11 +49,18 @@ unsigned char Serial_CAN::send(unsigned long id, uchar ext, uchar rtrBit, uchar 
     {
         dta[6+i] = buf[i];
     }
+
+    int num_written = 0;
     
     for(int i=0; i<14; i++)
     {
-        canSerial->write(dta[i]);
+        num_written += canSerial->write(dta[i]);
     }
+
+    if (num_written == 0 && len > 0)
+        return 0;
+
+    return 1;
 }
 
 
